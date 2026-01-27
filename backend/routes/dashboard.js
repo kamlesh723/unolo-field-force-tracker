@@ -7,6 +7,10 @@ const router = express.Router();
 // Get dashboard stats for manager
 router.get('/stats', authenticateToken, requireManager, async (req, res) => {
     try {
+        if(req.user.role!== 'manager'){
+            return res.status(403).json({success:false,message:"Manager Access Required"})
+        }
+
         const today = new Date().toISOString().split('T')[0];
 
         // Get team members
@@ -15,13 +19,26 @@ router.get('/stats', authenticateToken, requireManager, async (req, res) => {
             [req.user.id]
         );
 
+        // if manager has no team
+        if(teamMembers.length===0){
+            return res.json({
+                success:true,
+                data:{
+                    team_size:0,
+                    team_members:[],
+                    todayCheckins:[],
+                    active_checkins:0
+                }
+            })
+        }
+
         // Get today's check-ins for the team
         const [todayCheckins] = await pool.execute(
             `SELECT ch.*, u.name as employee_name, c.name as client_name
              FROM checkins ch
              INNER JOIN users u ON ch.employee_id = u.id
              INNER JOIN clients c ON ch.client_id = c.id
-             WHERE u.manager_id = ? AND DATE(ch.checkin_time) = ?
+             WHERE u.manager_id = ? AND DATE(ch.checkin_time) = DATE('now')
              ORDER BY ch.checkin_time DESC`,
             [req.user.id, today]
         );
@@ -52,6 +69,11 @@ router.get('/stats', authenticateToken, requireManager, async (req, res) => {
 // Get employee dashboard (for employees)
 router.get('/employee', authenticateToken, async (req, res) => {
     try {
+        
+        if(req.user.role!== 'employee'){
+            return res.status(403).json({success:false, message:'Employee access only'})
+        }
+
         const today = new Date().toISOString().split('T')[0];
 
         // Get today's check-ins
@@ -77,7 +99,7 @@ router.get('/employee', authenticateToken, async (req, res) => {
             `SELECT COUNT(*) as total_checkins,
                     COUNT(DISTINCT client_id) as unique_clients
              FROM checkins
-             WHERE employee_id = ? AND checkin_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)`,
+             WHERE employee_id = ? AND checkin_time >= DATE('now','-7 days')`,
             [req.user.id]
         );
 
