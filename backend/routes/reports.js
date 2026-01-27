@@ -4,6 +4,8 @@ const {authenticateToken,requireManager} = require("../middleware/auth");
 
 const router = express.Router();
 
+
+// Daily summary report for managers
 router.get("/daily-summary",authenticateToken,requireManager,async(req,res)=>{
     try {
         const {date, employee_id} = req.query;
@@ -21,6 +23,8 @@ router.get("/daily-summary",authenticateToken,requireManager,async(req,res)=>{
                 message: 'Invalid date format. Use YYYY-MM-DD'
             });
         }
+  // LEFT JOIN ensures employees with zero check-ins are included.
+//   LEFT JOIN ensures employees with zero check-ins are included.
         let sql = `
             SELECT
                 u.id AS employee_id,
@@ -53,7 +57,7 @@ router.get("/daily-summary",authenticateToken,requireManager,async(req,res)=>{
             // Execute query
             const [rows] = await pool.execute(sql,params);
 
-            // team-aggregation
+  // Team-level aggregates derived from per-employee results
 
             const teamSummary = {
                 total_employees: rows.length,
