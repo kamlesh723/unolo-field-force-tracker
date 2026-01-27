@@ -115,6 +115,7 @@ router.get('/history', authenticateToken, async (req, res) => {
         `;
         const params = [req.user.id];
 
+ //Converted filters to parameterized query placeholders
         if (start_date) {
             query += ` AND DATE(ch.checkin_time) >= ?`;
             params.push(start_date)
@@ -153,7 +154,7 @@ router.get('/active', authenticateToken, async (req, res) => {
                 message:"No active Check-in"
             })
         }
-        
+
     } catch (error) {
         console.error('Active checkin error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch active check-in' });
