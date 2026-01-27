@@ -61,7 +61,6 @@ router.get('/stats', authenticateToken, requireManager, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Dashboard stats error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch dashboard stats' });
     }
 });
@@ -112,7 +111,6 @@ router.get('/employee', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Employee dashboard error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch dashboard' });
     }
 });

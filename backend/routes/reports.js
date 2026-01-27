@@ -75,7 +75,6 @@ router.get("/daily-summary",authenticateToken,requireManager,async(req,res)=>{
         });
 
     } catch (error) {
-        console.error("dailt summary error:",error);
         res.status(500).json({success:false, message:"Failed to generate daily summary"})
     }
 })

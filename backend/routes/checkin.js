@@ -17,7 +17,6 @@ router.get('/clients', authenticateToken, async (req, res) => {
 
         res.json({ success: true, data: clients });
     } catch (error) {
-        console.error('Get clients error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch clients' });
     }
 });
@@ -96,7 +95,6 @@ router.post('/', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
-         console.error("CHECK-IN ERROR:", error);
         res.status(500).json({ success: false, message: 'Check-in failed' });
     }
 });
@@ -121,7 +119,6 @@ router.put('/checkout', authenticateToken, async (req, res) => {
 
         res.json({ success: true, message: 'Checked out successfully' });
     } catch (error) {
-        console.error('Checkout error:', error);
         res.status(500).json({ success: false, message: 'Checkout failed' });
     }
 });
@@ -155,7 +152,6 @@ router.get('/history', authenticateToken, async (req, res) => {
 
         res.json({ success: true, data: checkins });
     } catch (error) {
-        console.error('History error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch history' });
     }
 });
@@ -184,7 +180,6 @@ router.get('/active', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Active checkin error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch active check-in' });
     }
 });
