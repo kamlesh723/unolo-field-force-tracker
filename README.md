@@ -129,3 +129,13 @@ NODE_ENV=development
 - All timestamps are stored in UTC
 - Frontend requires browser geolocation permissions for check-in functionality
 
+
+## Time Spent
+
+Approximate time spent on this assignment: **7–8 hours**
+
+This includes:
+- Debugging existing backend and frontend issues
+- Implementing distance calculation feature
+- Designing and implementing daily summary report API
+- Writing documentation and answering theory questions
