@@ -1,5 +1,5 @@
 // degree to radian
-const toRad = (value)=>(value.Math.PI)/180;
+const toRad = (value)=>(value*Math.PI)/180;
 
 const calculateDistanceKm = (lat1,lon1,lat2,lon2)=>{
     const R = 6371;// earth radius in km

@@ -80,7 +80,7 @@ router.post('/', authenticateToken, async (req, res) => {
         )
         const [result] = await pool.execute(
             `INSERT INTO checkins 
-            (employee_id, client_id, lat, lng, distance_from_client,notes, status)
+            (employee_id, client_id, latitude, longitude, distance_from_client,notes, status)
              VALUES (?, ?, ?, ?, ?,?, 'checked_in')`,
             [req.user.id, client_id, latitude, longitude,distance, notes || null]
         );
@@ -96,6 +96,7 @@ router.post('/', authenticateToken, async (req, res) => {
             }
         });
     } catch (error) {
+         console.error("CHECK-IN ERROR:", error);
         res.status(500).json({ success: false, message: 'Check-in failed' });
     }
 });
@@ -179,7 +180,7 @@ router.get('/active', authenticateToken, async (req, res) => {
         }
         res.json({
                  success: true,
-                 data: checkins[0]
+                 data: checkins.length > 0 ? checkins[0] : null
         });
 
     } catch (error) {
