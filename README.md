@@ -7,7 +7,6 @@ A web application for tracking field employee check-ins at client locations with
 - **Frontend:** React 18, Vite, Tailwind CSS, React Router
 - **Backend:** Node.js, Express.js, SQLite
 - **Authentication:** JWT
-- **Geolocation:** HTML5 Geolocation API
 
 ## Quick Start
 
