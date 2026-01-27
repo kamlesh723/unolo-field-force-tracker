@@ -27,7 +27,13 @@ router.post('/', authenticateToken, async (req, res) => {
         const { client_id, latitude, longitude, notes } = req.body;
 
         if (!client_id) {
-            return res.status(200).json({ success: false, message: 'Client ID is required' });
+            return res.status(400).json({ success: false, message: 'Client ID is required' });
+        }
+        if(latitude ==null || longitude ==null){
+            return res.status(400).json({
+                success:false,
+                message:"latitude and longitude are required"   
+            })
         }
 
         // Check if employee is assigned to this client
@@ -76,7 +82,7 @@ router.post('/', authenticateToken, async (req, res) => {
 router.put('/checkout', authenticateToken, async (req, res) => {
     try {
         const [activeCheckins] = await pool.execute(
-            'SELECT * FROM checkins WHERE employee_id = ? ORDER BY checkin_time DESC LIMIT 1',
+            'SELECT * FROM checkins WHERE employee_id = ? AND status ="checked_in" ORDER BY checkin_time DESC LIMIT 1',
             [req.user.id]
         );
 
@@ -110,10 +116,12 @@ router.get('/history', authenticateToken, async (req, res) => {
         const params = [req.user.id];
 
         if (start_date) {
-            query += ` AND DATE(ch.checkin_time) >= '${start_date}'`;
+            query += ` AND DATE(ch.checkin_time) >= ?`;
+            params.push(start_date)
         }
         if (end_date) {
-            query += ` AND DATE(ch.checkin_time) <= '${end_date}'`;
+            query += ` AND DATE(ch.checkin_time) <= ?`;
+            params.push(end_date)
         }
 
         query += ' ORDER BY ch.checkin_time DESC';
@@ -139,10 +147,13 @@ router.get('/active', authenticateToken, async (req, res) => {
             [req.user.id]
         );
 
-        res.json({ 
-            success: true, 
-            data: checkins.length > 0 ? checkins[0] : null 
-        });
+        if(checkins.length===0){
+            return res.status(404).json({
+                success:false,
+                message:"No active Check-in"
+            })
+        }
+        
     } catch (error) {
         console.error('Active checkin error:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch active check-in' });
