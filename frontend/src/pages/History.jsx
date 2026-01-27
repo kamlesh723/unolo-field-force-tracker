@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../utils/api';
 
 function History({ user }) {
-    const [checkins, setCheckins] = useState(null);
+    const [checkins, setCheckins] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -42,7 +42,7 @@ function History({ user }) {
         fetchHistory();
     };
 
-    const totalHours = checkins.reduce((total, checkin) => {
+    const totalHours = (checkins || []).reduce((total, checkin) => {
         if (checkin.checkout_time) {
             const checkinTime = new Date(checkin.checkin_time);
             const checkoutTime = new Date(checkin.checkout_time);
@@ -139,6 +139,7 @@ function History({ user }) {
                                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Check-in</th>
                                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Check-out</th>
                                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Duration</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Distance (Km)</th>
                                 <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">Notes</th>
                             </tr>
                         </thead>
@@ -159,6 +160,7 @@ function History({ user }) {
                                             <div>{checkin.client_name}</div>
                                             <div className="text-xs text-gray-500">{checkin.client_address}</div>
                                         </td>
+                                        
                                         <td className="px-4 py-3">{checkinTime.toLocaleTimeString()}</td>
                                         <td className="px-4 py-3">
                                             {checkoutTime ? checkoutTime.toLocaleTimeString() : '-'}
@@ -171,6 +173,11 @@ function History({ user }) {
                                             }`}>
                                                 {duration}
                                             </span>
+                                        </td>
+                                        <td className="px-4 py-3 text-sm">
+                                             {checkin.distance_from_client != null
+                                             ? `${checkin.distance_from_client} km`
+                                                 : '—'}
                                         </td>
                                         <td className="px-4 py-3 text-sm text-gray-600">
                                             {checkin.notes || '-'}
