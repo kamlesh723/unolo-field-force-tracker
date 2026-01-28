@@ -350,4 +350,22 @@ I would:
 - Pusher Channels pricing: https://pusher.com/channels/pricing  
 - AWS EC2 pricing: https://aws.amazon.com/ec2/pricing/  
 - Node.js WebSocket scaling discussion: https://stackoverflow.com/questions/54032795/how-many-websocket-connections-can-nodejs-handle  
+- Uber Engineering blog on edge infrastructure: https://www.uber.com/blog/engineering/tech-stack-part-two-edge-engineering/  
 - WebSocket vs HTTP battery impact (general mobile dev knowledge, not a specific paper—this is a gap in my research)
+
+
+---
+
+## Industry Reference: How This Scales Further
+
+I reviewed Uber's engineering blog on their edge infrastructure systems. At their scale (millions of concurrent drivers), they use:
+- Microservices architecture with dedicated location ingestion services
+- Geospatial indexing (H3 hexagonal grid system)
+- Streaming platforms (likely Kafka) for event processing
+- Global distribution with regional clusters
+
+This level of complexity is unnecessary for 10K devices but validates that starting with a simpler HTTP → WebSocket hybrid is appropriate. The architecture can evolve when scale demands it.
+
+Source: https://www.uber.com/blog/engineering/tech-stack-part-two-edge-engineering/
+
+---
